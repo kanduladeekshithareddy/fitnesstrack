@@ -7,13 +7,13 @@ import Bimg from '../images/home3.jpeg'
 export default function Backimg() {
   return (
     <Container>
-        <img src={Bimg} alt="backimg" className='backimage'/>.
+        <img src={Bimg} alt="backimg" className='backimage'/>
         <h1 className="brandname">Tough Love</h1>
     </Container>
   )
 }
 const Container=styled.div`
-  body{
+   body{
     overflow:hidden;
   }
   .backimage{
@@ -24,6 +24,10 @@ const Container=styled.div`
     overflow:hidden;
     max-width: 100%;
     max-height:100%;
+    position: relative;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
   }
   .brandname{
     position:absolute;
@@ -33,8 +37,7 @@ const Container=styled.div`
     padding-right:5%;
     z-index:1;
     width:100vw;
-    /* height:100vh; */
-  }
+  } 
 `;
 // import React, { useState, useEffect } from 'react';
 // import styled from 'styled-components';

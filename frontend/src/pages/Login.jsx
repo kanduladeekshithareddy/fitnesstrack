@@ -1,105 +1,98 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import Backimg from "../components/Backimg";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import TextInput from "../components/Textinput.jsx";
+import Button from "../components/Button";
+import { UserSignIn } from "../api";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../redux/reducers/userSlice";
 
+const Container = styled.div`
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+`;
+const Title = styled.div`
+  font-size: 30px;
+  font-weight: 800;
+  color: ${({ theme }) => theme.text_primary};
+`;
+const Span = styled.div`
+  font-size: 16px;
+  font-weight: 400;
+  color: ${({ theme }) => theme.text_secondary + 90};
+`;
 
-export default function Login() {
+const Login = () => {
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
+  const [buttonDisabled, setButtonDisabled] = useState(false);
   const [email, setEmail] = useState("");
-  const [pass, setPass] = useState("");
-  const navigate=useNavigate();
-  const handleSubmit=(e)=>{
-    e.preventDefault()
-    axios.post('http://localhost:4000/login',{email,pass})
-    .then(result => {
-      console.log(result);
-      if (result.data ==="success"){
-        navigate('/');
-      }
-    })
-    .catch(err => console.log(err))
-  }
+  const [password, setPassword] = useState("");
+
+  const validateInputs = () => {
+    if (!email || !password) {
+      alert("Please fill in all fields");
+      return false;
+    }
+    return true;
+  };
+
+  const handelSignIn = async () => {
+    setLoading(true);
+    setButtonDisabled(true);
+    if (validateInputs()) {
+      await UserSignIn({ email, password })
+        .then((res) => {
+          dispatch(loginSuccess(res.data));
+          alert("Login Success");
+          setLoading(false);
+          setButtonDisabled(false);
+        })
+        .catch((err) => {
+          alert(err.response.data.message);
+          setLoading(false);
+          setButtonDisabled(false);
+        });
+    }
+  };
+
   return (
     <Container>
-      <Backimg />
-      <div className="formcontainer">
-        <form action="" className="inner-form" onSubmit={handleSubmit}>
-          <label htmlFor="username" className="formlabel">
-            Email:
-          </label>
-          <input
-            name="email"
-            type="text"
-            className="username"
-            placeholder="Enter Email"
-            onChange={(e)=>{setEmail(e.target.value)}}
-          />
-          <label htmlFor="password" className="formlabel">
-            Password:
-          </label>
-          <input
-            name="pass"
-            type="password"
-            className="password"
-            placeholder="Enter Password"
-            onChange={(e)=>{setPass(e.target.value)}}
-          />
-          <a href="/signup">Don't have an account?</a>
-          <button className="login">Login</button>
-        </form>
+      <div>
+        <Title>Welcome to ToughLove 👋</Title>
+        <Span>Please login with your details here</Span>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          gap: "20px",
+          flexDirection: "column",
+        }}
+      >
+        <TextInput
+          label="Email Address"
+          placeholder="Enter your email address"
+          value={email}
+          handelChange={(e) => setEmail(e.target.value)}
+        />
+        <TextInput
+          label="Password"
+          placeholder="Enter your password"
+          password
+          value={password}
+          handelChange={(e) => setPassword(e.target.value)}
+        />
+        <Button
+          text="SignIn"
+          onClick={handelSignIn}
+          isLoading={loading}
+          isDisabled={buttonDisabled}
+        />
       </div>
     </Container>
   );
-}
-const Container = styled.div`
-  body {
-    overflow: hidden;
-  }
-  .formcontainer {
-    /* background-color:red; */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    position: relative;
-    color: white;
-  }
-  .inner-form {
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    border-radius: 5px;
-    flex-direction: column;
-    padding: 2rem;
-  }
-  .formlabel {
-    /* color:black; */
-    padding: 0.2em;
-    font-family: monospace;
-    font-size: 1rem;
-  }
-  input {
-    border: 0px;
-    padding: 5px;
-    border-bottom: 2px solid white;
-    background-color: transparent;
-    margin-bottom: 5px;
-    width: 20vw;
-  }
-  a {
-    padding: 1em;
-    padding-left: 0px;
-    font-size: small;
-    color: beige;
-    text-decoration: none;
-    font-family: "Courier New", Courier, monospace;
-  }
-  button {
-    padding: 0.5rem;
-    background-color: #ff5100;
-    border: 0px;
-    color: white;
-    border-radius: 5px;
-    font-weight: 700;
-  }
-`;
+};
+
+export default Login;

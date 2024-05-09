@@ -1,21 +1,47 @@
-import React from 'react'
-import {BrowserRouter,Route,Routes} from "react-router-dom"
-import Toughlove from './pages/Toughlove';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
-import Signinfo from './pages/Signinfo';
+import { ThemeProvider, styled } from "styled-components";
+import { lightTheme } from "./utils/Theme";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Authentication from "./pages/Authentication";
+// import { useState } from "react";
+import { useSelector } from "react-redux";
+import Navbar from "./components/Navbar";
+import Dashboard from "./pages/Dashboard";
+import Workouts from "./pages/Workouts";
+import Tutorial from "./pages/Tutorial";
+
+const Container = styled.div`
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: ${({ theme }) => theme.bg};
+  color: ${({ theme }) => theme.text_primary};
+  overflow-x: hidden;
+  overflow-y: hidden;
+  transition: all 0.2s ease;
+`;
+
 function App() {
+  const { currentUser } = useSelector((state) => state.user);
   return (
-    <>
+    <ThemeProvider theme={lightTheme}>
       <BrowserRouter>
-        <Routes>
-          <Route exact path='/login' element={<Login/>}/>
-          <Route exact path='/' element={<Toughlove/>}/>  
-          <Route exact path='/signup' element={<Signup/>}/> 
-          <Route exact path='/signinfo' element={<Signinfo/>}/> 
-        </Routes>
+        {currentUser ? (
+          <Container>
+            <Navbar currentUser={currentUser} />
+            <Routes>
+              <Route path="/" exact element={<Dashboard />} />
+              <Route path="/workouts" exact element={<Workouts />} />
+              <Route path="/tutorials" exact element={<Tutorial />} />
+            </Routes>
+          </Container>
+        ) : (
+          <Container>
+            <Authentication />
+          </Container>
+        )}
       </BrowserRouter>
-    </>
+    </ThemeProvider>
   );
 }
 

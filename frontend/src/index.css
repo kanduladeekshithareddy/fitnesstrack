@@ -16,6 +16,7 @@ body {
 
 html,body{
   overflow-x:hidden;
+  scroll-behavior: smooth;
 }
 
 body::-webkit-scrollbar{
@@ -42,3 +43,17 @@ body::-webkit-scrollbar{
   align-items: center;
 }
 
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;500;600;700&display=swap");
+
+/* width */
+::-webkit-scrollbar {
+  width: 2px;
+}
+/* Track */
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 6px;
+  height: 50px;
+}
